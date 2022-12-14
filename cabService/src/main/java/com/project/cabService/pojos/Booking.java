@@ -25,11 +25,9 @@ public class Booking extends BaseEntity {
 
 	@OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id", nullable = false)
-
 	private User customer;
 
 	@OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
-	@JoinColumn(name = "car_for_driver_id", nullable = false)
-
+	@JoinColumn(name = "car_for_driver_id", nullable = false,unique = true)
 	private CarForDriver car;
 }
