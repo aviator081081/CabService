@@ -1,10 +1,18 @@
 package com.project.cabService.controller;
 
+import java.io.IOException;
+import java.net.CookieManager;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +25,7 @@ import com.project.cabService.dto.CarForDriverDto;
 import com.project.cabService.pojos.Car;
 import com.project.cabService.pojos.CarForDriver;
 import com.project.cabService.pojos.User;
+import com.project.cabService.repositories.ICarForDriverRepo;
 import com.project.cabService.services.IAdminService;
 import com.project.cabService.services.ICarForDriverService;
 
@@ -31,10 +40,23 @@ public class AdminController {
 	@Autowired
 	ICarForDriverService carForDriverService;
 	
+	@Autowired
+	ICarForDriverRepo cfdr;
+	
 	@GetMapping("/test")
-	public void test() {
-		System.out.println("tested");
+	public Principal test(@AuthenticationPrincipal OAuth2User principal,Principal p,Jwt jwt) {
+		System.out.println(jwt.getTokenValue());
+		System.out.println(principal.getAttributes().get("email"));
+		return p;
+		
 	}
+	
+	@GetMapping("/loggedOut")
+	public String loggedOut(@AuthenticationPrincipal OAuth2User principal) {
+	
+		return "<h1>loggedOut</h1>";
+	}
+	
 	
 	@PostMapping("/addDriver")
 	public ResponseEntity<User> addDriver(@RequestBody User user){

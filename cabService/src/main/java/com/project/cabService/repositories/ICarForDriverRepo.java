@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.cabService.pojos.Car;
 import com.project.cabService.pojos.CarForDriver;
 import com.project.cabService.pojos.User;
 
@@ -33,6 +34,9 @@ public interface ICarForDriverRepo extends JpaRepository<CarForDriver, Integer>{
 	
 	@Query("select cfd.driver from CarForDriver cfd where cfd.id = ?1")
 	public User findDriver(Integer id);
+	
+	@Query("select cfd.car from CarForDriver cfd where cfd.driver = (select u from User u where u.email = ?1) and cfd.assignedStatus = false")
+	public List<Car> findAllUsedCarsByDriverEmail(String email);
 	
 	@Transactional
 	@Modifying
