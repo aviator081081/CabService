@@ -9,4 +9,5 @@ public interface IBookingService {
 	public Booking bookRide(String email,Integer carForDriverId);
 	public List<Booking>getAllBookings(String email);
 	public Booking cancelRide(Integer id);
+	public String cancelBooking(String email);
 }

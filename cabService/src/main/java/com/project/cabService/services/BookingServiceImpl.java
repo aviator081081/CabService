@@ -52,4 +52,10 @@ public class BookingServiceImpl implements IBookingService {
 		return booking;
 	}
 
+	@Override
+	public String cancelBooking(String email) {
+		Booking booking = bookingRepo.deleteByEmail(email);
+		return null;
+	}
+
 }

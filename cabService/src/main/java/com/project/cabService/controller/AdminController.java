@@ -10,9 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.jwt.Jwt;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.cabService.dto.CarForDriverDto;
+import com.project.cabService.pojos.Booking;
 import com.project.cabService.pojos.Car;
 import com.project.cabService.pojos.CarForDriver;
 import com.project.cabService.pojos.User;
+import com.project.cabService.repositories.IBookingRepo;
 import com.project.cabService.repositories.ICarForDriverRepo;
 import com.project.cabService.services.IAdminService;
+import com.project.cabService.services.IBookingService;
 import com.project.cabService.services.ICarForDriverService;
 
 
@@ -43,20 +44,17 @@ public class AdminController {
 	@Autowired
 	ICarForDriverRepo cfdr;
 	
-	@GetMapping("/test")
-	public Principal test(@AuthenticationPrincipal OAuth2User principal,Principal p,Jwt jwt) {
-		System.out.println(jwt.getTokenValue());
-		System.out.println(principal.getAttributes().get("email"));
-		return p;
-		
-	}
+	@Autowired
+	IBookingService bookingService;
 	
-	@GetMapping("/loggedOut")
-	public String loggedOut(@AuthenticationPrincipal OAuth2User principal) {
-	
-		return "<h1>loggedOut</h1>";
-	}
-	
+//	@GetMapping("/test")
+//	public Principal test(@AuthenticationPrincipal OAuth2User principal) {
+//		System.out.println(jwt.getTokenValue());
+//		System.out.println(principal.getAttributes().get("email"));
+//		return p;
+//		
+//	}
+
 	
 	@PostMapping("/addDriver")
 	public ResponseEntity<User> addDriver(@RequestBody User user){
@@ -98,7 +96,6 @@ public class AdminController {
 	
 	@GetMapping("/approveRequestByEmail")
 	public ResponseEntity<CarForDriver> approveRequest(@RequestParam String email){
-		System.out.println("--------------------------------------------------------------------------------------------------------------------------");
 		CarForDriver approvedRequest = carForDriverService.approveRequest(email);
 		return new ResponseEntity<>(approvedRequest,HttpStatus.OK);
 	} 
@@ -129,5 +126,11 @@ public class AdminController {
 		List<CarForDriverDto> approvedRequestList = carForDriverService.getAllApprovedRequests().stream().map(m -> new CarForDriverDto(m.getId(),m.getDriver().getEmail(),m.getCar().getName(),m.getCar().getNumberPlate()) ).toList();
 		return new ResponseEntity<>(approvedRequestList,HttpStatus.OK);
 	} 
-
+	
+	@PostMapping("/getAllBookings")
+	public ResponseEntity<List<Booking>> getAllBookings(@RequestParam String email) {
+		
+		List<Booking> bookingList = bookingService.getAllBookings(email);
+		return new ResponseEntity<>(bookingList,HttpStatus.OK);
+	}
 }

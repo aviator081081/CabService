@@ -3,9 +3,12 @@ package com.project.cabService.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.cabService.dto.BookingRequestDto;
@@ -25,5 +28,11 @@ public class CustomerController {
 		Booking booking = bookingService.bookRide(request.getCustomerEmail(), request.getCarForDriverId());
 		BookingResponseDto bookingResponse = new BookingResponseDto(booking.getCustomer().getEmail(),booking.getCar().getDriver().getEmail(),booking.getCar().getCar().getName(),booking.getCar().getCar().getNumberPlate());
 		return new ResponseEntity<>(bookingResponse, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/cancelCab")
+	public ResponseEntity<String> cancelRide(@RequestParam String email){
+		String bookingMessage = bookingService.cancelBooking(email);
+		return new ResponseEntity<>(bookingMessage,HttpStatus.OK);
 	}
 }
